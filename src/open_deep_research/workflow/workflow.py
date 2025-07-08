@@ -4,7 +4,7 @@ from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, get_
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import Send
 from langgraph.graph import START, END, StateGraph
-from langgraph.types import interrupt, Command
+from langgraph.types import Command
 
 from open_deep_research.workflow.configuration import WorkflowConfiguration
 from open_deep_research.workflow.state import (
@@ -62,7 +62,7 @@ async def clarify_with_user(state: ReportState, config: RunnableConfig):
     return {"messages": [AIMessage(content=results.question)], "already_clarified_topic": True}
 
 
-async def generate_report_plan(state: ReportState, config: RunnableConfig) -> Command[Literal["human_feedback","build_section_with_web_research"]]:
+async def generate_report_plan(state: ReportState, config: RunnableConfig) -> Command[Literal["build_section_with_web_research"]]:
     messages = state["messages"]
     feedback_list = state.get("feedback_on_report_plan", [])
     feedback = " /// ".join(feedback_list) if feedback_list else ""
@@ -73,7 +73,6 @@ async def generate_report_plan(state: ReportState, config: RunnableConfig) -> Co
     search_api = get_config_value(configurable.search_api)
     search_api_config = configurable.search_api_config or {}  # Get the config dict, default to empty
     params_to_pass = get_search_params(search_api, search_api_config)  # Filter parameters
-    sections_user_approval = configurable.sections_user_approval
 
     if isinstance(report_structure, dict):
         report_structure = str(report_structure)
@@ -121,40 +120,13 @@ async def generate_report_plan(state: ReportState, config: RunnableConfig) -> Co
                                              HumanMessage(content=planner_message)])
     sections = report_sections.sections
 
-    if sections_user_approval:
-        return Command(goto="human_feedback", update={"sections": sections})
-    else:
-        return Command(goto=[
-            Send("build_section_with_web_research", {"messages": messages, "section": s, "search_iterations": 0}) 
-            for s in sections 
-            if s.research
-        ], update={"sections": sections})
+    return Command(goto=[
+        Send("build_section_with_web_research", {"messages": messages, "section": s, "search_iterations": 0})
+        for s in sections
+        if s.research
+    ], update={"sections": sections})
 
 
-async def human_feedback(state: ReportState, config: RunnableConfig) -> Command[Literal["generate_report_plan","build_section_with_web_research"]]:
-    messages = state["messages"]
-    sections = state['sections']
-    sections_str = "\n\n".join(
-        f"Section: {section.name}\n"
-        f"Description: {section.description}\n"
-        f"Research needed: {'Yes' if section.research else 'No'}\n"
-        for section in sections
-    )
-    interrupt_message = f"""Please provide feedback on the following report plan. 
-                        \n\n{sections_str}\n
-                        \nDoes the report plan meet your needs?\nPass 'true' to approve the report plan.\nOr, provide feedback to regenerate the report plan:"""
-    feedback = interrupt(interrupt_message)
-    if (isinstance(feedback, bool) and feedback is True) or (isinstance(feedback, str) and feedback.lower() == "true"):
-        return Command(goto=[
-            Send("build_section_with_web_research", {"messages": messages, "section": s, "search_iterations": 0}) 
-            for s in sections 
-            if s.research
-        ])
-    elif isinstance(feedback, str):
-        return Command(goto="generate_report_plan", 
-                       update={"feedback_on_report_plan": [feedback]})
-    else:
-        raise TypeError(f"Interrupt value of type {type(feedback)} is not supported.")
 
 
 async def generate_queries(state: SectionState, config: RunnableConfig):
@@ -316,7 +288,6 @@ section_builder.add_edge("search_web", "write_section")
 builder = StateGraph(ReportState, input=ReportStateInput, output=ReportStateOutput, config_schema=WorkflowConfiguration)
 builder.add_node("clarify_with_user", clarify_with_user)
 builder.add_node("generate_report_plan", generate_report_plan)
-builder.add_node("human_feedback", human_feedback)
 builder.add_node("build_section_with_web_research", section_builder.compile())
 builder.add_node("gather_completed_sections", gather_completed_sections)
 builder.add_node("write_final_sections", write_final_sections)
