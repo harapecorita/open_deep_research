@@ -1,4 +1,4 @@
-report_planner_query_writer_instructions="""You are performing research for a report. 
+report_planner_query_writer_instructions="""あなたはレポート作成のためのリサーチを担当しています。
 
 <Report topic>
 {topic}
@@ -9,78 +9,82 @@ report_planner_query_writer_instructions="""You are performing research for a re
 </Report organization>
 
 <Task>
-Your goal is to generate {number_of_queries} web search queries that will help gather information for planning the report sections. 
+レポート構成を計画するために役立つウェブ検索クエリを{number_of_queries}件生成してください。
 
-The queries should:
+クエリの条件:
 
-1. Be related to the Report topic
-2. Help satisfy the requirements specified in the report organization
+1. レポートテーマに関連していること
+2. レポート構成の要件を満たすこと
 
-Make the queries specific enough to find high-quality, relevant sources while covering the breadth needed for the report structure.
+幅広い情報をカバーしつつ質の高い情報源を得られるよう、具体的なクエリを考えてください。
 </Task>
 
 <Format>
-Call the Queries tool 
+Queriesツールを呼び出してください
 </Format>
+
+なお、出力はすべて日本語で行ってください。
 
 Today is {today}
 """
 
-report_planner_instructions="""I want a plan for a report that is concise and focused.
+report_planner_instructions="""簡潔で焦点を絞ったレポートの構成案を作成してください。
 
 <Report topic>
-The topic of the report is:
+レポートのテーマ:
 {topic}
 </Report topic>
 
 <Report organization>
-The report should follow this organization: 
+レポートは次の構成に従います:
 {report_organization}
 </Report organization>
 
 <Context>
-Here is context to use to plan the sections of the report: 
+セクションを計画する際に参考にするコンテキスト:
 {context}
 </Context>
 
 <Task>
-Generate a list of sections for the report. Your plan should be tight and focused with NO overlapping sections or unnecessary filler. 
+重複や不要な内容のない、引き締まったセクション構成を作成してください。
 
-For example, a good report structure might look like:
-1/ intro
-2/ overview of topic A
-3/ overview of topic B
-4/ comparison between A and B
-5/ conclusion
+例として以下のような構成が考えられます:
+1/ 序論
+2/ トピックAの概要
+3/ トピックBの概要
+4/ AとBの比較
+5/ まとめ
 
-Each section should have the fields:
+各セクションには以下の項目を含めてください:
 
-- Name - Name for this section of the report.
-- Description - Brief overview of the main topics covered in this section.
-- Research - Whether to perform web research for this section of the report. IMPORTANT: Main body sections (not intro/conclusion) MUST have Research=True. A report must have AT LEAST 2-3 sections with Research=True to be useful.
-- Content - The content of the section, which you will leave blank for now.
+- Name - セクションの名前
+- Description - このセクションで扱う内容の概要
+- Research - このセクションでウェブリサーチを行うかどうか。重要: 本文セクション（序論・結論以外）ではResearch=Trueとし、少なくとも2〜3セクションはResearch=Trueである必要があります。
+- Content - セクションの内容。ここでは空欄のままにしておきます。
 
-Integration guidelines:
-- Include examples and implementation details within main topic sections, not as separate sections
-- Ensure each section has a distinct purpose with no content overlap
-- Combine related concepts rather than separating them
-- CRITICAL: Every section MUST be directly relevant to the main topic
-- Avoid tangential or loosely related sections that don't directly address the core topic
+統合のガイドライン:
+- 具体例や実装詳細は本文セクション内に含め、別セクションに分けない
+- セクションごとに目的を明確にし、内容が重複しないようにする
+- 関連する概念は分割せずにまとめる
+- すべてのセクションはメインテーマに直接関連していること
+- 本題から外れる内容は避ける
 
-Before submitting, review your structure to ensure it has no redundant sections and follows a logical flow.
+提出前に、構成に重複がなく論理的な流れになっているか確認してください。
 </Task>
 
 <Feedback>
-Here is feedback on the report structure from review (if any):
+レビューから得られたフィードバック（あれば）:
 {feedback}
 </Feedback>
 
 <Format>
-Call the Sections tool 
+Sectionsツールを呼び出してください
 </Format>
+
+なお、出力は日本語で行ってください。
 """
 
-query_writer_instructions="""You are an expert technical writer crafting targeted web search queries that will gather comprehensive information for writing a technical report section.
+query_writer_instructions="""あなたは技術レポートのセクション執筆のために、的確なウェブ検索クエリを作成する専門ライターです。
 
 <Report topic>
 {topic}
@@ -91,56 +95,60 @@ query_writer_instructions="""You are an expert technical writer crafting targete
 </Section topic>
 
 <Task>
-Your goal is to generate {number_of_queries} search queries that will help gather comprehensive information above the section topic. 
+セクションの内容を充実させるための検索クエリを{number_of_queries}件生成してください。
 
-The queries should:
+クエリの条件:
 
-1. Be related to the topic 
-2. Examine different aspects of the topic
+1. トピックに関連していること
+2. 異なる観点を調べられること
 
-Make the queries specific enough to find high-quality, relevant sources.
+質の高い情報源を得られるよう、具体的で的を絞ったクエリにしてください。
 </Task>
 
 <Format>
-Call the Queries tool 
+Queriesツールを呼び出してください
 </Format>
+
+なお、出力は日本語で行ってください。
 
 Today is {today}
 """
 
-section_writer_instructions = """Write one section of a research report.
+section_writer_instructions = """レポートの1セクションを執筆してください。
 
 <Task>
-1. Review the report topic, section name, and section topic carefully.
-2. If present, review any existing section content. 
-3. Then, look at the provided Source material.
-4. Decide the sources that you will use it to write a report section.
-5. Write the report section and list your sources. 
+1. レポートのトピック、セクション名、セクションのテーマを確認する
+2. 既存のセクション内容があれば確認する
+3. 提供されたソース資料を読む
+4. 使用する情報源を決めてセクションを執筆する
+5. セクション本文とともに参照したソースを列挙する
 </Task>
 
 <Writing Guidelines>
-- If existing section content is not populated, write from scratch
-- If existing section content is populated, synthesize it with the source material
-- Strict 150-200 word limit
-- Use simple, clear language
-- Use short paragraphs (2-3 sentences max)
-- Use ## for section title (Markdown format)
+- セクション内容が未記入の場合は一から執筆する
+- 既存の内容がある場合はソースと統合してまとめる
+- 本文は150～200語以内に収める
+- 平易で明確な日本語を用いる
+- 段落は2〜3文程度で簡潔に
+- セクションタイトルはMarkdownの##形式で記載
 </Writing Guidelines>
 
 <Citation Rules>
-- Assign each unique URL a single citation number in your text
-- End with ### Sources that lists each source with corresponding numbers
-- IMPORTANT: Number sources sequentially without gaps (1,2,3,4...) in the final list regardless of which sources you choose
-- Example format:
+- 各URLには一意の番号を振り、本文中に引用番号を記載する
+- 最後に### Sourcesの見出しを置き、番号とURLを対応させて一覧にする
+- 番号は1,2,3...と連番にすること
+- 例:
   [1] Source Title: URL
   [2] Source Title: URL
 </Citation Rules>
 
 <Final Check>
-1. Verify that EVERY claim is grounded in the provided Source material
-2. Confirm each URL appears ONLY ONCE in the Source list
-3. Verify that sources are numbered sequentially (1,2,3...) without any gaps
+1. すべての記述が提供されたソースに基づいているか確認する
+2. URLがソース一覧に一度だけ登場するかチェックする
+3. 番号が欠けることなく連続しているか確認する
 </Final Check>
+
+なお、出力は日本語で行ってください。
 """
 
 section_writer_inputs=""" 
@@ -165,7 +173,7 @@ section_writer_inputs="""
 </Source material>
 """
 
-section_grader_instructions = """Review a report section relative to the specified topic:
+section_grader_instructions = """指定されたトピックに関するレポートセクションを評価してください。
 
 <Report topic>
 {topic}
@@ -180,24 +188,25 @@ section_grader_instructions = """Review a report section relative to the specifi
 </section content>
 
 <task>
-Evaluate whether the section content adequately addresses the section topic.
+セクションの内容がセクションテーマを十分に取り上げているか評価してください。
 
-If the section content does not adequately address the section topic, generate {number_of_follow_up_queries} follow-up search queries to gather missing information.
+不十分な場合は、情報を補うための追跡検索クエリを{number_of_follow_up_queries}件生成してください。
 </task>
 
 <format>
-Call the Feedback tool and output with the following schema:
+Feedbackツールを呼び出し、以下の形式で出力してください:
 
 grade: Literal["pass","fail"] = Field(
-    description="Evaluation result indicating whether the response meets requirements ('pass') or needs revision ('fail')."
+    description="要件を満たしているか('pass')、修正が必要か('fail')を示す評価結果"
 )
 follow_up_queries: List[SearchQuery] = Field(
-    description="List of follow-up search queries.",
+    description="追跡検索クエリの一覧",
 )
 </format>
+なお、出力は日本語で行ってください。
 """
 
-final_section_writer_instructions="""You are an expert technical writer crafting a section that synthesizes information from the rest of the report.
+final_section_writer_instructions="""あなたはレポート全体をまとめる専門ライターです。既存の内容を統合したセクションを執筆してください。
 
 <Report topic>
 {topic}
@@ -219,51 +228,51 @@ final_section_writer_instructions="""You are an expert technical writer crafting
 1. Section-Specific Approach:
 
 For Introduction:
-- Use # for report title (Markdown format)
-- 50-100 word limit
-- Write in simple and clear language
-- Focus on the core motivation for the report in 1-2 paragraphs
-- Preview the specific content covered in the main body sections (mention key examples, case studies, or findings)
-- Use a clear narrative arc to introduce the report
-- Include NO structural elements (no lists or tables)
-- No sources section needed
+- 見出しにはMarkdown形式の#を使用
+- 50〜100語でまとめる
+- わかりやすい日本語で書く
+- レポートの主旨を1〜2段落で示す
+- 本文で扱う内容を簡潔に予告する（主要な事例や発見を言及）
+- 明確なストーリーラインで導入する
+- リストや表などの構造化要素は入れない
+- Sourcesセクションは不要
 
 For Conclusion/Summary:
-- Use ## for section title (Markdown format)
-- 100-150 word limit
-- Synthesize and tie together the key themes, findings, and insights from the main body sections
-- Reference specific examples, case studies, or data points covered in the report
-- For comparative reports:
-    * Must include a focused comparison table using Markdown table syntax
-    * Table should distill insights from the report
-    * Keep table entries clear and concise
-- For non-comparative reports: 
-    * Only use ONE structural element IF it helps distill the points made in the report:
-    * Either a focused table comparing items present in the report (using Markdown table syntax)
-    * Or a short list using proper Markdown list syntax:
-      - Use `*` or `-` for unordered lists
-      - Use `1.` for ordered lists
-      - Ensure proper indentation and spacing
-- End with specific next steps or implications based on the report content
-- No sources section needed
+- 見出しにはMarkdown形式の##を使用
+- 100〜150語でまとめる
+- 本文セクションの主要なポイントを総合し、結論づける
+- レポートで触れた具体例やデータに言及する
+- 比較レポートの場合:
+    * Markdown表を用いた比較表を必ず含める
+    * 表はレポートの洞察を簡潔にまとめる
+    * 項目は明瞭かつ簡潔に
+- 通常のレポートの場合:
+    * 重要点を整理する目的で、表または短いリストを1つだけ使用可能
+    * リストは`*`や`-`、もしくは`1.`を正しく用いる
+    * インデントやスペースに注意する
+- レポート内容を踏まえた今後の展望や示唆で締めくくる
+- Sourcesセクションは不要
 
 3. Writing Approach:
-- Use concrete details over general statements
-- Make every word count
-- Focus on your single most important point
+- 抽象的な表現より具体的な記述を優先する
+- 無駄な言葉を省き簡潔にまとめる
+- 最も重要なポイントに集中して書く
 </Task>
 
 <Quality Checks>
-- For introduction: 50-100 word limit, # for report title, no structural elements, no sources section
-- For conclusion: 100-150 word limit, ## for section title, only ONE structural element at most, no sources section
-- Markdown format
-- Do not include word count or any preamble in your response
-</Quality Checks>"""
+- 序論: 50〜100語、タイトルは#を使用、構造化要素・Sourcesなし
+- 結論: 100〜150語、タイトルは##を使用、構造化要素は最大1つまで、Sourcesなし
+- Markdown形式で記述
+- 文字数や前置きは記載しない
+</Quality Checks>
+
+なお、出力は日本語で行ってください。
+"""
 
 
 ## Supervisor
 SUPERVISOR_INSTRUCTIONS = """
-You are scoping research for a report based on a user-provided topic.
+あなたはユーザーが指定したトピックに基づき、レポート作成の範囲を決定する監督者です。以降の出力は日本語で行ってください。
 
 <workflow_sequence>
 **CRITICAL: You MUST follow this EXACT sequence of tool calls. Do NOT skip any steps or call tools out of order.**
@@ -340,7 +349,7 @@ Today is {today}
 """
 
 RESEARCH_INSTRUCTIONS = """
-You are a researcher responsible for completing a specific section of a report.
+あなたはレポートの特定セクションを担当する研究者です。以降の出力は日本語で行ってください。
 
 ### Your goals:
 
@@ -443,7 +452,7 @@ Today is {today}
 """
 
 
-SUMMARIZATION_PROMPT = """You are tasked with summarizing the raw content of a webpage retrieved from a web search. Your goal is to create a concise summary that preserves the most important information from the original web page. This summary will be used by a downstream research agent, so it's crucial to maintain the key details without losing essential information.
+SUMMARIZATION_PROMPT = """あなたはウェブ検索で取得したページ内容を要約する役割を担っています。重要な情報を損なわず簡潔にまとめ、後続の研究エージェントが利用しやすい形にしてください。出力は日本語で行ってください。
 
 Here is the raw content of the webpage:
 
