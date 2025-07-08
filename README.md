@@ -121,6 +121,7 @@ Open Deep Research features two distinct implementation approaches, each with it
 The graph-based implementation follows a structured plan-and-execute workflow:
 
 - **Planning Phase**: Uses a planner model to analyze the topic and generate a structured report plan
+- **Human-in-the-Loop**: Allows for human feedback and approval of the report plan before proceeding
 - **Sequential Research Process**: Creates sections one by one with reflection between search iterations
 - **Section-Specific Research**: Each section has dedicated search queries and content retrieval
 - **Supports Multiple Search Tools**: Works with all search providers (Tavily, Perplexity, Exa, ArXiv, PubMed, Linkup, etc.)
